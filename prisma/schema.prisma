@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String 
+  image     String?  
+  status    Int?    @default(0) 
+  reviews   Review[]  
+}
+
+model Restaurant {
+  id	              Int     @id @default(autoincrement())		
+  name	            String				
+  image	            String?
+  address	          String			
+  website	          String?
+  phone_number      String		
+  low_price	        Int		
+  high_price	      Int			
+  open_time	        String?
+  close_time	      String?
+  rating_average	  Float?  @default(0)
+  foods             Food[]
+}
+
+model Food {
+  id	              Int     @id @default(autoincrement())				
+  name	            String			
+  description	      String				
+  image	            String?	
+  restaurant        Restaurant  @relation(fields: [restaurant_id], references: [id])
+  restaurant_id	    Int				
+  price             Int   
+  rating_average    Float?  @default(0)
+  reviews           Review[]
+}
+
+model Review {
+  id	              Int     @id @default(autoincrement())				
+  user              User    @relation(fields: [user_id], references: [id])
+  user_id	          Int			
+  food	            Food    @relation(fields: [food_id], references: [id])	
+  food_id	          Int 		
+  rating	          Float			
+  status	          Boolean?	@default(false)			
+  image	            String?					
+  review_text	      String		
+  review_date	      DateTime?  @default(now())  			
+}

@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Food" ADD COLUMN     "rating_average" DOUBLE PRECISION DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "Review" ALTER COLUMN "review_date" DROP NOT NULL,
+ALTER COLUMN "review_date" SET DEFAULT CURRENT_TIMESTAMP;
