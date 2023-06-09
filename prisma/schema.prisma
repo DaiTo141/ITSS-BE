@@ -44,7 +44,7 @@ model Food {
   restaurant        Restaurant  @relation(fields: [restaurant_id], references: [id])
   restaurant_id	    Int				
   price             Int   
-  rating_average    Float?  @default(0)
+  rating_average    Float  @default(0)
   reviews           Review[]
 }
 

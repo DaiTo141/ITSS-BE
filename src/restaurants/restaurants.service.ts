@@ -13,10 +13,6 @@ export class RestaurantsService {
 
   async findByNameOrFindAll(name: string) {
     if (name) {
-      // const result = await this.prisma.$queryRawUnsafe(
-      //   `select * from "Restaurant" where name ilike $1`,
-      //   `%${name}%`,
-      // );
       const result = await this.prisma.restaurant.findMany({
         where: {
           name: {
@@ -25,22 +21,23 @@ export class RestaurantsService {
           },
         },
         include: {
-          foods: {
-            include: {},
-          },
+          foods: {},
         },
       });
       return result;
-    } else return this.prisma.restaurant.findMany();
+    } else
+      return this.prisma.restaurant.findMany({
+        include: {
+          foods: {},
+        },
+      });
   }
 
   findOne(id: number) {
     return this.prisma.restaurant.findUnique({
       where: { id },
       include: {
-        foods: {
-          include: {},
-        },
+        foods: {},
       },
     });
   }

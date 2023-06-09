@@ -13,38 +13,105 @@ export class FoodsService {
   }
 
   async findByNameOrFindAll(name: string) {
+    let listdata;
     if (name) {
-      const result = await this.prisma.$queryRawUnsafe(
-        `select "Food"."name", "Restaurant"."name", "Food"."image", "Food"."price", count(*)::integer as "rating_total", avg(rating) as "average_rating" from "Food", "Review", "Restaurant" where "Food"."name" ilike $1 AND"Food".id = "Review".food_id AND "Restaurant".id = "Food".restaurant_id  group by "Food".id, "Restaurant".name`,
-        `%${name}%`,
-      );
-      return result;
+      listdata = await this.prisma.food.findMany({
+        where: {
+          name: {
+            contains: `${name}`,
+            mode: 'insensitive',
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          image: true,
+          price: true,
+          restaurant: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
     } else {
-      const result = await this.prisma.$queryRawUnsafe(
-        `select "Food"."name", "Restaurant"."name", "Food"."image", "Food"."price", count(*)::integer as "rating_total", avg(rating) as "average_rating" from "Food", "Review", "Restaurant"  where "Food".id = "Review".food_id AND "Restaurant".id = "Food".restaurant_id  group by "Food".id, "Restaurant".name`,
-      );
-      return result;
+      listdata = await this.prisma.food.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          image: true,
+          price: true,
+          restaurant: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
     }
+    return listdata;
   }
 
   async findOne(id: number) {
-    return this.prisma.food.findUnique({
+    const data = await this.prisma.food.findUnique({
       where: { id: id },
-      include: {
-        reviews: {
-          include: {},
-        },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        image: true,
+        price: true,
+        _count: true,
         restaurant: {
           select: {
             name: true,
           },
         },
+        reviews: {},
       },
     });
+
+    const {
+      name,
+      image,
+      description,
+      price,
+      restaurant,
+      _count: review_list,
+      reviews,
+    } = data;
+
+    const total_review = review_list.reviews;
+    const sum_star_rating = reviews.reduce((accumulator, review) => {
+      return accumulator + review.rating;
+    }, 0);
+    const rating_average = Math.round(sum_star_rating / total_review) as number;
+    const restaurant_name = restaurant.name;
+
+    await this.prisma.food.update({
+      where: { id },
+      data: { rating_average },
+    });
+    return {
+      id,
+      name,
+      image,
+      description,
+      price,
+      restaurant_name,
+      total_review,
+      rating_average,
+      reviews,
+    };
   }
 
   update(id: number, updateFoodDto: UpdateFoodDto) {
-    return this.prisma.food.update({ where: { id }, data: updateFoodDto });
+    return this.prisma.food.update({
+      where: { id },
+      data: updateFoodDto,
+    });
   }
 
   remove(id: number) {
