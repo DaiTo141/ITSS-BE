@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Food } from './entities/food.entity';
 
 @Injectable()
 export class FoodsService {
@@ -13,7 +14,8 @@ export class FoodsService {
   }
 
   async findByNameOrFindAll(name: string) {
-    let listdata;
+    let listdata: Food[];
+
     if (name) {
       listdata = await this.prisma.food.findMany({
         where: {
@@ -28,11 +30,13 @@ export class FoodsService {
           description: true,
           image: true,
           price: true,
+          _count: true,
           restaurant: {
             select: {
               name: true,
             },
           },
+          reviews: {},
         },
       });
     } else {
@@ -43,15 +47,50 @@ export class FoodsService {
           description: true,
           image: true,
           price: true,
+          _count: true,
           restaurant: {
             select: {
               name: true,
             },
           },
+          reviews: {},
         },
       });
     }
-    return listdata;
+
+    const newListData = listdata.map((food) => {
+      const {
+        id,
+        name,
+        image,
+        description,
+        price,
+        restaurant,
+        _count,
+        reviews,
+      } = food;
+      const total_review = _count.reviews;
+      const sum_star_rating = reviews.reduce((accumulator, review) => {
+        return accumulator + review.rating;
+      }, 0);
+      const rating_average = Math.round(
+        sum_star_rating / total_review,
+      ) as number;
+      const restaurant_name = restaurant.name;
+
+      return {
+        id,
+        name,
+        image,
+        description,
+        price,
+        restaurant_name,
+        total_review,
+        rating_average,
+        reviews,
+      };
+    });
+    return newListData;
   }
 
   async findOne(id: number) {
@@ -73,27 +112,16 @@ export class FoodsService {
       },
     });
 
-    const {
-      name,
-      image,
-      description,
-      price,
-      restaurant,
-      _count: review_list,
-      reviews,
-    } = data;
+    const { name, image, description, price, restaurant, _count, reviews } =
+      data;
 
-    const total_review = review_list.reviews;
+    const total_review = _count.reviews;
     const sum_star_rating = reviews.reduce((accumulator, review) => {
       return accumulator + review.rating;
     }, 0);
     const rating_average = Math.round(sum_star_rating / total_review) as number;
     const restaurant_name = restaurant.name;
 
-    await this.prisma.food.update({
-      where: { id },
-      data: { rating_average },
-    });
     return {
       id,
       name,
