@@ -10,8 +10,18 @@ export class ReviewsService {
     return this.prisma.review.create({ data: createReviewDto });
   }
 
-  findAll() {
-    return this.prisma.review.findMany();
+  async findAll() {
+    const result = await this.prisma.review.findMany({
+      include: {
+        user: {
+          select: {
+            image: true,
+          },
+        },
+      },
+    });
+
+    return result;
   }
 
   findGoodReviews() {
