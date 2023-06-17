@@ -76,6 +76,14 @@ export class FoodsService {
       const rating_average = Math.round(
         sum_star_rating / total_review,
       ) as number;
+
+      this.prisma.food.update({
+        where: { id },
+        data: {
+          rating_average: rating_average,
+        },
+      });
+
       const restaurant_name = restaurant.name;
 
       return {
