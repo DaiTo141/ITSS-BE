@@ -16,6 +16,7 @@ export class ReviewsService {
         user: {
           select: {
             image: true,
+            name: true,
           },
         },
       },
