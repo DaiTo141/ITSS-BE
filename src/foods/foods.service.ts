@@ -36,7 +36,13 @@ export class FoodsService {
               name: true,
             },
           },
-          reviews: {},
+          reviews: {
+            select: {
+              rating: true,
+              review_text: true,
+              user: true
+            },
+          },
         },
       });
     } else {
@@ -53,7 +59,13 @@ export class FoodsService {
               name: true,
             },
           },
-          reviews: {},
+          reviews: {
+            select: {
+              rating: true,
+              review_text: true,
+              user: true
+            },
+          },
         },
       });
     }
