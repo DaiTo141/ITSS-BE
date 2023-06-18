@@ -40,7 +40,8 @@ export class FoodsService {
             select: {
               rating: true,
               review_text: true,
-              user: true
+              user: true,
+              id: true,
             },
           },
         },
@@ -63,7 +64,8 @@ export class FoodsService {
             select: {
               rating: true,
               review_text: true,
-              user: true
+              user: true,
+              id: true,
             },
           },
         },
