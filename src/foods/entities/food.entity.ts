@@ -9,5 +9,5 @@ export class Food {
   restaurant: { name: string };
   _count: Prisma.FoodCountOutputType;
   rating_average?: number;
-  reviews: Review[];
+  reviews: any;
 }
