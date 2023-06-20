@@ -24,7 +24,25 @@ export class RestaurantsService {
           },
         },
         include: {
-          foods: {},
+          foods: {
+            include: {
+              reviews: {
+                select: {
+                  user: {
+                    select: {
+                      name: true,
+                      image: true,
+                    },
+                  },
+                  id: true,
+                  rating: true,
+                  image: true,
+                  review_date: true,
+                  review_text: true,
+                },
+              },
+            },
+          },
         },
       });
     } else {
@@ -71,6 +89,7 @@ export class RestaurantsService {
                     image: true,
                   },
                 },
+                id: true,
                 rating: true,
                 image: true,
                 review_text: true,
