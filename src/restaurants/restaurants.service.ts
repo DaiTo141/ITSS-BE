@@ -37,14 +37,22 @@ export class RestaurantsService {
 
     const newListData = listData.map((restaurant) => {
       const { foods } = restaurant;
-      const rating_average =
-        foods.reduce((acc, restaurant) => acc + restaurant.rating_average, 0) /
-        foods.length;
+      const sum_star_rating = foods.reduce((acc, food) => {
+        return acc + food.rating_average;
+      }, 0);
+
+      const rating_average = Math.round(
+        sum_star_rating / foods.length,
+      ) as number;
+
+      return { ...restaurant, rating_average };
+    });
+
+    newListData.forEach((restaurant) => {
       this.prisma.restaurant.update({
         where: { id: restaurant.id },
-        data: { rating_average: rating_average },
+        data: { rating_average: restaurant.rating_average },
       });
-      return { ...restaurant, rating_average };
     });
     return newListData;
   }
@@ -53,7 +61,24 @@ export class RestaurantsService {
     return this.prisma.restaurant.findUnique({
       where: { id },
       include: {
-        foods: {},
+        foods: {
+          include: {
+            reviews: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    image: true,
+                  },
+                },
+                rating: true,
+                image: true,
+                review_text: true,
+                review_date: true,
+              },
+            },
+          },
+        },
       },
     });
   }
