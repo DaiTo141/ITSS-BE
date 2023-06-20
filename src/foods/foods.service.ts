@@ -41,6 +41,10 @@ export class FoodsService {
               rating: true,
               review_text: true,
               user: true,
+<<<<<<< HEAD
+=======
+              id: true,
+>>>>>>> 409fee21ba704b6b0c99b7e1fa6d42231fe3b9c8
             },
           },
         },
