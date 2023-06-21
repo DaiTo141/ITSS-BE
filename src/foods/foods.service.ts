@@ -41,7 +41,13 @@ export class FoodsService {
               id: true,
               rating: true,
               review_text: true,
-              user: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
             },
           },
         },
@@ -66,7 +72,13 @@ export class FoodsService {
               rating: true,
               review_text: true,
               review_date: true,
-              user: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
             },
           },
         },
@@ -105,8 +117,8 @@ export class FoodsService {
       };
     });
 
-    newListData.forEach((food) => {
-      this.prisma.food.update({
+    newListData.forEach(async (food) => {
+      await this.prisma.food.update({
         where: { id: food.id },
         data: { rating_average: food.rating_average },
       });

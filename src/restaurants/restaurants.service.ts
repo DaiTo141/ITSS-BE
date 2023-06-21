@@ -31,6 +31,7 @@ export class RestaurantsService {
                   user: {
                     select: {
                       name: true,
+                      email: true,
                       image: true,
                     },
                   },
@@ -48,7 +49,26 @@ export class RestaurantsService {
     } else {
       listData = await this.prisma.restaurant.findMany({
         include: {
-          foods: {},
+          foods: {
+            include: {
+              reviews: {
+                select: {
+                  user: {
+                    select: {
+                      name: true,
+                      email: true,
+                      image: true,
+                    },
+                  },
+                  id: true,
+                  rating: true,
+                  image: true,
+                  review_date: true,
+                  review_text: true,
+                },
+              },
+            },
+          },
         },
       });
     }
@@ -66,8 +86,8 @@ export class RestaurantsService {
       return { ...restaurant, rating_average };
     });
 
-    newListData.forEach((restaurant) => {
-      this.prisma.restaurant.update({
+    newListData.forEach(async (restaurant) => {
+      await this.prisma.restaurant.update({
         where: { id: restaurant.id },
         data: { rating_average: restaurant.rating_average },
       });
@@ -86,6 +106,7 @@ export class RestaurantsService {
                 user: {
                   select: {
                     name: true,
+                    email: true,
                     image: true,
                   },
                 },
