@@ -120,7 +120,7 @@ export class FoodsService {
     newListData.forEach(async (food) => {
       await this.prisma.food.update({
         where: { id: food.id },
-        data: { rating_average: food.rating_average },
+        data: { rating_average: food.rating_average ? food.rating_average : 0},
       });
     });
 
@@ -139,15 +139,29 @@ export class FoodsService {
         _count: true,
         restaurant: {
           select: {
+            id: true,
             name: true,
           },
         },
-        reviews: {},
+        reviews: {
+          select: {
+            id: true,
+            rating: true,
+            review_text: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    const { name, image, description, price, restaurant, _count, reviews } =
-      data;
+    const { name, image, description, price, restaurant, _count, reviews } = data;
 
     const total_review = _count.reviews;
     const sum_star_rating = reviews.reduce((accumulator, review) => {
@@ -155,13 +169,14 @@ export class FoodsService {
     }, 0);
     const rating_average = Math.round(sum_star_rating / total_review) as number;
     const restaurant_name = restaurant.name;
-
+    const restaurant_id = restaurant.id;
     return {
       id,
       name,
       image,
       description,
       price,
+      restaurant_id,
       restaurant_name,
       total_review,
       rating_average,
