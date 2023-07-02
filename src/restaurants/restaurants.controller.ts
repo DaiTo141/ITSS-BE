@@ -24,8 +24,8 @@ export class RestaurantsController {
   }
 
   @Get()
-  findByNameOrFindAll(@Query() params: any) {
-    return this.restaurantsService.findByNameOrFindAll(params.name);
+  findByParamsOrFindAll(@Query() params: any) {
+    return this.restaurantsService.findByParamsOrFindAll(params);
   }
 
   @Get(':id')

@@ -17,7 +17,8 @@ model User {
   email     String   @unique
   password  String 
   image     String?  
-  status    Int?    @default(0) 
+  status    Int?     @default(0) 
+  nation    String? 
   reviews   Review[]  
 }
 

@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "image" TEXT,
     "status" INTEGER NOT NULL,
-
+    "nation" TEXT,
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 

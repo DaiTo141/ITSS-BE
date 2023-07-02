@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -13,79 +13,64 @@ export class FoodsService {
     return this.prisma.food.create({ data: createFoodDto });
   }
 
-  async findByNameOrFindAll(name: string) {
+  async findByParamsOrFindAll(params: any) {
     let listdata: Food[];
+    let name = params.name
+    let low_price = params.low_price
+    let high_price = params.high_price
+    let jp_like = params.jp_like
+    let options:any = {}
 
-    if (name) {
-      listdata = await this.prisma.food.findMany({
-        where: {
-          name: {
-            contains: `${name}`,
-            mode: 'insensitive',
+    if (name) 
+      options.name = {
+        contains: `${name}`,
+        mode: 'insensitive',
+      }
+    if (low_price && high_price)
+      options.AND = [
+        {
+          price: {gte: +low_price}
+        },
+        {
+          price: {lte: +high_price}
+        },
+      ]
+    
+    listdata = await this.prisma.food.findMany({
+      where: {
+        ...options
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        image: true,
+        price: true,
+        _count: true,
+        restaurant: {
+          select: {
+            name: true,
           },
         },
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          image: true,
-          price: true,
-          _count: true,
-          restaurant: {
-            select: {
-              name: true,
-            },
-          },
-          reviews: {
-            select: {
-              id: true,
-              rating: true,
-              review_text: true,
-              user: {
-                select: {
-                  name: true,
-                  email: true,
-                  image: true,
-                },
+        reviews: {
+          select: {
+            id: true,
+            rating: true,
+            review_text: true,
+            user: {
+              select: {
+                name: true,
+                email: true,
+                image: true,
+                nation: true
               },
             },
           },
         },
-      });
-    } else {
-      listdata = await this.prisma.food.findMany({
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          image: true,
-          price: true,
-          _count: true,
-          restaurant: {
-            select: {
-              name: true,
-            },
-          },
-          reviews: {
-            select: {
-              id: true,
-              rating: true,
-              review_text: true,
-              review_date: true,
-              user: {
-                select: {
-                  name: true,
-                  email: true,
-                  image: true,
-                },
-              },
-            },
-          },
-        },
-      });
-    }
+      },
+    });
 
-    const newListData = listdata.map((food) => {
+    let newListData = listdata.map((food) => {
       const {
         id,
         name,
@@ -99,7 +84,7 @@ export class FoodsService {
       const total_review = _count.reviews;
       const sum_star_rating = reviews.reduce((accumulator, review) => {
         return accumulator + review.rating;
-      }, 0);
+      }, 0); 
       const rating_average = Math.round(
         sum_star_rating / total_review,
       ) as number;
@@ -124,7 +109,23 @@ export class FoodsService {
       });
     });
 
-    return newListData;
+    if (jp_like == 'true') {
+      let jpList:any = []
+      newListData.forEach((food) => {
+        if (food.reviews.length > 0) {
+          let count = 0
+          let count_jp = 0
+          food.reviews.forEach((rv:any) => {
+            if (rv.user.nation == 'jp') {
+              count_jp ++;
+              if (rv.rating >= 4) count ++;
+            }
+          })
+          if (count_jp > 0 && count/count_jp >= 0.8) jpList.push(food)
+        } 
+      })
+      return jpList
+    } else return newListData;
   }
 
   async findOne(id: number) {
@@ -154,6 +155,7 @@ export class FoodsService {
                 name: true,
                 email: true,
                 image: true,
+                nation: true
               },
             },
           },
