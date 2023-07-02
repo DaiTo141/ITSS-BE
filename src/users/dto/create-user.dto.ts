@@ -15,4 +15,7 @@ export class CreateUserDto {
 
   @ApiProperty({ required: false, default: 0 })
   status: number;
+
+  @ApiProperty({ required: false, default: 'jp' })
+  nation: string;
 }

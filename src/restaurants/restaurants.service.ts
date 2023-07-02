@@ -12,77 +12,61 @@ export class RestaurantsService {
     return this.prisma.restaurant.create({ data: createRestaurantDto });
   }
 
-  async findByNameOrFindAll(name: string) {
+  async findByParamsOrFindAll(params: any) {
     let listData: Restaurant[];
-
-    if (name) {
-      listData = await this.prisma.restaurant.findMany({
-        where: {
-          name: {
-            contains: `${name}`,
-            mode: 'insensitive',
-          },
-        },
-        include: {
-          foods: {
-            include: {
-              reviews: {
-                select: {
-                  user: {
-                    select: {
-                      name: true,
-                      email: true,
-                      image: true,
-                    },
-                  },
-                  id: true,
-                  rating: true,
-                  image: true,
-                  review_date: true,
-                  review_text: true,
-                },
-              },
-            },
-          },
-        },
-      });
-    } else {
-      listData = await this.prisma.restaurant.findMany({
-        include: {
-          foods: {
-            include: {
-              reviews: {
-                select: {
-                  user: {
-                    select: {
-                      name: true,
-                      email: true,
-                      image: true,
-                    },
-                  },
-                  id: true,
-                  rating: true,
-                  image: true,
-                  review_date: true,
-                  review_text: true,
-                },
-              },
-            },
-          },
-        },
-      });
+    let name = params.name
+    let lowPrice = +params.low_price
+    let highPrice = +params.high_price
+    let options: any = {}
+    if (name) 
+      options.name = {
+        contains: `${name}`,
+        mode: 'insensitive',
+      }
+    if (lowPrice && highPrice) {
+      options.low_price = {
+        lte: lowPrice
+      }
+      options.high_price = {
+        gte: highPrice
+      }
     }
+    listData = await this.prisma.restaurant.findMany({
+      where: {
+        ...options
+      },
+      include: {
+        foods: {
+          include: {
+            reviews: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true,
+                    image: true,
+                  },
+                },
+                id: true,
+                rating: true,
+                image: true,
+                review_date: true,
+                review_text: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
     const newListData = listData.map((restaurant) => {
       const { foods } = restaurant;
       const sum_star_rating = foods.reduce((acc, food) => {
         return acc + food.rating_average;
       }, 0);
-
       const rating_average = Math.round(
         sum_star_rating / foods.length,
       ) as number;
-
       return { ...restaurant, rating_average };
     });
 
@@ -108,13 +92,14 @@ export class RestaurantsService {
                     name: true,
                     email: true,
                     image: true,
+                    nation: true
                   },
                 },
-                id: true,
-                rating: true,
-                image: true,
-                review_text: true,
-                review_date: true,
+              id: true,
+              rating: true,
+              image: true,
+              review_text: true,
+              review_date: true,
               },
             },
           },

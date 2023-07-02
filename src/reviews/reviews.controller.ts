@@ -32,6 +32,11 @@ export class ReviewsController {
     return this.reviewsService.findGoodReviews();
   }
 
+  @Get('/user/:id')
+  findUserReview(@Param('id') id: string) {
+    return this.reviewsService.findUserReview(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reviewsService.findOne(+id);
