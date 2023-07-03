@@ -17,12 +17,22 @@ export class ReviewsService {
           select: {
             image: true,
             name: true,
+            nation: true,
+            status: true
           },
         },
       },
     });
-
     return result;
+  }
+
+  async findUserReview(id: number) {
+    const result = await this.prisma.review.findMany({
+      where: {
+        user_id: id
+      }
+    });
+    return result
   }
 
   findGoodReviews() {
