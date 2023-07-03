@@ -13,7 +13,6 @@ export class RestaurantsService {
   }
 
   async findByParamsOrFindAll(params: any) {
-    let listData: Restaurant[];
     let name = params.name
     let lowPrice = +params.low_price
     let highPrice = +params.high_price
@@ -31,7 +30,7 @@ export class RestaurantsService {
         gte: highPrice
       }
     }
-    listData = await this.prisma.restaurant.findMany({
+    const listData = await this.prisma.restaurant.findMany({
       where: {
         ...options
       },

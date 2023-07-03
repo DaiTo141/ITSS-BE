@@ -42,7 +42,7 @@ model Food {
   name	            String			
   description	      String				
   image	            String?	
-  restaurant        Restaurant  @relation(fields: [restaurant_id], references: [id])
+  restaurant        Restaurant  @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
   restaurant_id	    Int				
   price             Int   
   rating_average    Int  @default(0)
@@ -51,9 +51,9 @@ model Food {
 
 model Review {
   id	              Int     @id @default(autoincrement())				
-  user              User    @relation(fields: [user_id], references: [id])
+  user              User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id	          Int			
-  food	            Food    @relation(fields: [food_id], references: [id])	
+  food	            Food    @relation(fields: [food_id], references: [id], onDelete: Cascade)	
   food_id	          Int 		
   rating	          Int     @default(3)	
   status	          Boolean?	@default(false)			

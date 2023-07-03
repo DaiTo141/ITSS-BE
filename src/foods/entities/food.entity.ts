@@ -6,7 +6,7 @@ export class Food {
   description: string;
   image: string;
   price: number;
-  restaurant: { name: string };
+  restaurant: { name: string, id: number };
   _count: Prisma.FoodCountOutputType;
   rating_average?: number;
   reviews: any;
