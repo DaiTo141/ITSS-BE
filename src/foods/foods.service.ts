@@ -14,11 +14,11 @@ export class FoodsService {
   }
 
   async findByParamsOrFindAll(params: any) {
-    let name = params.name
-    let low_price = params.low_price
-    let high_price = params.high_price
-    let jp_like = params.jp_like
-    let options:any = {}
+    const name = params.name
+    const low_price = params.low_price
+    const high_price = params.high_price
+    const jp_like = params.jp_like
+    const options:any = {}
 
     if (name) 
       options.name = {
@@ -70,7 +70,7 @@ export class FoodsService {
       },
     });
 
-    let newListData = listdata.map((food) => {
+    const newListData = listdata.map((food) => {
       const {
         id,
         name,
@@ -110,7 +110,7 @@ export class FoodsService {
     });
 
     if (jp_like == 'true') {
-      let jpList:any = []
+      const jpList:any = []
       newListData.forEach((food) => {
         if (food.reviews.length > 0) {
           let count = 0

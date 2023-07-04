@@ -13,10 +13,10 @@ export class RestaurantsService {
   }
 
   async findByParamsOrFindAll(params: any) {
-    let name = params.name
-    let lowPrice = +params.low_price
-    let highPrice = +params.high_price
-    let options: any = {}
+    const name = params.name
+    const lowPrice = +params.low_price
+    const highPrice = +params.high_price
+    const options: any = {}
     if (name) 
       options.name = {
         contains: `${name}`,
