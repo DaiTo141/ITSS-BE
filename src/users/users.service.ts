@@ -40,7 +40,9 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({ where: { id }, data: updateUserDto });
+    var idUser = +id;
+    return this.prisma.user.update({ 
+      where: { "id": idUser}, data: updateUserDto });
   }
 
   remove(id: number) {
