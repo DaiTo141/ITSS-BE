@@ -72,7 +72,7 @@ export class RestaurantsService {
     newListData.forEach(async (restaurant) => {
       await this.prisma.restaurant.update({
         where: { id: restaurant.id },
-        data: { rating_average: restaurant.rating_average },
+        data: { rating_average: restaurant.rating_average?restaurant.rating_average:0 },
       });
     });
     return newListData;
