@@ -14,7 +14,7 @@ export class RestaurantsService {
 
   async findByParamsOrFindAll(params: any) {
     const name = params.name
-    const lowPrice = +params.low_price
+    const lowPrice = +params.low_price;
     const highPrice = +params.high_price
     const options: any = {}
     if (name) 

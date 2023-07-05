@@ -18,6 +18,7 @@ export class FoodsService {
     const low_price = params.low_price
     const high_price = params.high_price
     const jp_like = params.jp_like
+    const percent = params.percent
     const options:any = {}
 
     if (name) 
@@ -109,7 +110,7 @@ export class FoodsService {
       });
     });
 
-    if (jp_like == 'true') {
+    if (jp_like == 'true' && percent) {
       const jpList:any = []
       newListData.forEach((food) => {
         if (food.reviews.length > 0) {
@@ -121,7 +122,7 @@ export class FoodsService {
               if (rv.rating >= 4) count ++;
             }
           })
-          if (count_jp > 0 && count/count_jp >= 0.8) jpList.push(food)
+          if (count_jp > 0 && count/count_jp >= percent/100) jpList.push(food)
         } 
       })
       return jpList

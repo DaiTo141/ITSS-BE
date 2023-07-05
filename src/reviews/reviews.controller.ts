@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -23,8 +24,8 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewsService.findAll();
+  findByParamsOrFindAll(@Query() params:any) {
+    return this.reviewsService.findByParamsOrFindAll(params);
   }
 
   @Get('goodreviews')

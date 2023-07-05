@@ -26,8 +26,8 @@ export class UsersController {
   }
 
   @Get()
-  findByNameOrFindAll(@Query() params: any) {
-    return this.usersService.findByNameOrFindAll(params.name);
+  findByParamsOrFindAll(@Query() params: any) {
+    return this.usersService.findByParamsOrFindAll(params);
   }
 
   // @UseGuards(AuthsGuard)

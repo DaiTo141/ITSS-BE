@@ -10,8 +10,10 @@ export class ReviewsService {
     return this.prisma.review.create({ data: createReviewDto });
   }
 
-  async findAll() {
-    const result = await this.prisma.review.findMany({
+  async findByParamsOrFindAll(params:any) {
+    const name = params.name
+    const options:any = {}
+    const listData = await this.prisma.review.findMany({
       include: {
         user: {
           select: {
@@ -21,9 +23,18 @@ export class ReviewsService {
             status: true
           },
         },
+        food: true
       },
     });
-    return result;
+    if (name) {
+      let result = []
+      listData.map((value:any) => {
+        if (value.user.name.toLowerCase().includes(name.toLowerCase())) {
+          result.push(value)
+        }
+      })
+      return result
+    } else return listData;
   }
 
   async findUserReview(id: number) {

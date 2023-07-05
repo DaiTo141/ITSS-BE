@@ -10,14 +10,29 @@ export class UsersService {
     return this.prisma.user.create({ data: createUserDto });
   }
 
-  async findByNameOrFindAll(name: string) {
-    if (name) {
-      const result = await this.prisma.$queryRawUnsafe(
-        `select * from "Food" where name ilike $1`,
-        `%${name}%`,
-      );
-      return result;
-    } else return this.prisma.user.findMany();
+  async findByParamsOrFindAll(params:any) {
+    const name = params.name
+    const options: any = {}
+    if (name) 
+      options.name = {
+        contains: `${name}`,
+        mode: 'insensitive',
+      }
+
+    const listData = await this.prisma.user.findMany({
+      where: {
+        ...options
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        nation: true,
+        image: true,
+        status: true
+      }
+    })
+    return listData
   }
 
   findOne(id: number) {
