@@ -9,7 +9,7 @@ export class AuthsService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
 
   async signIn(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({ where: { email:email } });
     if (user.password !== password) {
       throw new UnauthorizedException();
     }

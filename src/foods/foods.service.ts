@@ -189,7 +189,7 @@ export class FoodsService {
 
   update(id: number, updateFoodDto: UpdateFoodDto) {
     return this.prisma.food.update({
-      where: { id },
+      where: { id:id },
       data: updateFoodDto,
     });
   }

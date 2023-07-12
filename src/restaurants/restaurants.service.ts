@@ -80,7 +80,7 @@ export class RestaurantsService {
 
   findOne(id: number) {
     return this.prisma.restaurant.findUnique({
-      where: { id },
+      where: { id:id },
       include: {
         foods: {
           include: {
@@ -113,12 +113,12 @@ export class RestaurantsService {
 
   update(id: number, updateRestaurantDto: UpdateRestaurantDto) {
     return this.prisma.restaurant.update({
-      where: { id },
+      where: { id:id },
       data: updateRestaurantDto,
     });
   }
 
   remove(id: number) {
-    return this.prisma.restaurant.delete({ where: { id } });
+    return this.prisma.restaurant.delete({ where: { id:id } });
   }
 }

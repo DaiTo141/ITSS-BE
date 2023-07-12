@@ -51,14 +51,14 @@ export class ReviewsService {
   }
 
   findOne(id: number) {
-    return this.prisma.review.findUnique({ where: { id } });
+    return this.prisma.review.findUnique({ where: { id:id } });
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {
-    return this.prisma.review.update({ where: { id }, data: updateReviewDto });
+    return this.prisma.review.update({ where: { id:id }, data: updateReviewDto });
   }
 
   remove(id: number) {
-    return this.prisma.review.delete({ where: { id } });
+    return this.prisma.review.delete({ where: { id:id } });
   }
 }
