@@ -10,7 +10,7 @@ export class AuthsService {
 
   async signIn(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email:email } });
-    if (user.password !== password || user.status == 1) {
+    if (user.password !== password || user.status == 0) {
       throw new UnauthorizedException();
     }
     const payload = { id: user.id, email: user.email };
