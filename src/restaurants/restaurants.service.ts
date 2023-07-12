@@ -8,8 +8,8 @@ import { Restaurant } from './entities/restaurant.entity';
 export class RestaurantsService {
   constructor(private prisma: PrismaService) {}
 
-  create(createRestaurantDto: CreateRestaurantDto) {
-    return this.prisma.restaurant.create({ data: createRestaurantDto });
+  async create(createRestaurantDto: CreateRestaurantDto) {
+    return await this.prisma.restaurant.create({ data: createRestaurantDto });
   }
 
   async findByParamsOrFindAll(params: any) {
@@ -78,8 +78,8 @@ export class RestaurantsService {
     return newListData;
   }
 
-  findOne(id: number) {
-    return this.prisma.restaurant.findUnique({
+  async findOne(id: number) {
+    return await this.prisma.restaurant.findUnique({
       where: { id:id },
       include: {
         foods: {
@@ -107,18 +107,18 @@ export class RestaurantsService {
     });
   }
 
-  findByName(restaurantName: string) {
-    return this.prisma.restaurant.findMany({ where: { name: restaurantName } });
+  async findByName(restaurantName: string) {
+    return await this.prisma.restaurant.findMany({ where: { name: restaurantName } });
   }
 
-  update(id: number, updateRestaurantDto: UpdateRestaurantDto) {
-    return this.prisma.restaurant.update({
+  async update(id: number, updateRestaurantDto: UpdateRestaurantDto) {
+    return await this.prisma.restaurant.update({
       where: { id:id },
       data: updateRestaurantDto,
     });
   }
 
-  remove(id: number) {
-    return this.prisma.restaurant.delete({ where: { id:id } });
+  async remove(id: number) {
+    return await this.prisma.restaurant.delete({ where: { id:id } });
   }
 }

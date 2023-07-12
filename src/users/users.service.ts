@@ -6,8 +6,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
-  create(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({ data: createUserDto });
+  async create(createUserDto: CreateUserDto) {
+    return await this.prisma.user.create({ data: createUserDto });
   }
 
   async findByParamsOrFindAll(params:any) {
@@ -35,18 +35,15 @@ export class UsersService {
     return listData
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findOne(id: number) {
+    return await this.prisma.user.findUnique({ where: { id:id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    var idUser = +id;
-    return this.prisma.user.update({ 
-      where: { "id": idUser}, data: updateUserDto });
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.prisma.user.update({ where: { id: id}, data: updateUserDto });
   }
 
-  remove(id: number) {
-    var idUser = +id;
-    return this.prisma.user.delete({ where: { "id": idUser } });
+  async remove(id: number) {
+    return await this.prisma.user.delete({ where: { id: id } });
   }
 }

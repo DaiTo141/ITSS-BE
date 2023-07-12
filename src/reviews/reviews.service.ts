@@ -6,8 +6,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class ReviewsService {
   constructor(private prisma: PrismaService) {}
-  create(createReviewDto: CreateReviewDto) {
-    return this.prisma.review.create({ data: createReviewDto });
+  async create(createReviewDto: CreateReviewDto) {
+    return await this.prisma.review.create({ data: createReviewDto });
   }
 
   async findByParamsOrFindAll(params:any) {
@@ -46,19 +46,19 @@ export class ReviewsService {
     return result
   }
 
-  findGoodReviews() {
-    return this.prisma.review.findMany({ where: { rating: 5 } });
+  async findGoodReviews() {
+    return await this.prisma.review.findMany({ where: { rating: 5 } });
   }
 
-  findOne(id: number) {
-    return this.prisma.review.findUnique({ where: { id:id } });
+  async findOne(id: number) {
+    return await this.prisma.review.findUnique({ where: { id:id } });
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return this.prisma.review.update({ where: { id:id }, data: updateReviewDto });
+  async update(id: number, updateReviewDto: UpdateReviewDto) {
+    return await this.prisma.review.update({ where: { id:id }, data: updateReviewDto });
   }
 
-  remove(id: number) {
-    return this.prisma.review.delete({ where: { id:id } });
+  async remove(id: number) {
+    return await this.prisma.review.delete({ where: { id:id } });
   }
 }
